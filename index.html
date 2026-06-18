@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Nexus Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.59.0/build/stlite.css" />
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.59.0/build/stlite.js"></script>
+  <script>
+    stlite.mount({
+      requirements: ["pandas", "plotly"], // Hier Python-Bibliotheken eintragen, die du brauchst
+      entrypoint: "app.py",
+      files: {
+        "app.py": `
+import streamlit as st
+import pandas as pd
+import numpy as np
+import plotly.express as px
+
+# Dashboard-Einstellungen (Dark Mode wird von Streamlit automatisch unterstützt)
+st.set_page_config(page_title="Nexus Dashboard", layout="wide")
+
+st.title("🌐 NEXUS DASHBOARD")
+st.markdown("Willkommen auf deiner Analyse-Plattform. Komplett in Python geschrieben!")
+
+# Beispiel-Metriken (wie in professionellen Dashboards)
+col1, col2, col3, col4 = st.columns(4)
+col1.metric(label="Aktive Nutzer", value="1,245", delta="12%")
+col2.metric(label="Server-Status", value="Online", delta="99.9%")
+col3.metric(label="Umsatz (Monat)", value="$45,231", delta="8.4%")
+col4.metric(label="Fehlerrate", value="0.04%", delta="-0.02%")
+
+st.markdown("---")
+
+# Interaktive Charts erstellen
+st.subheader("📊 Performance-Analyse")
+
+# Spalten für Layout
+left_column, right_column = st.columns(2)
+
+# Spalte 1: Ein Liniendiagramm
+with left_column:
+    chart_data = pd.DataFrame(
+        np.random.randn(20, 3),
+        columns=['Server A', 'Server B', 'Server C']
+    )
+    st.line_chart(chart_data)
+
+# Spalte 2: Ein Plotly-Diagramm
+with right_column:
+    df = pd.DataFrame({
+        "Kategorie": ["KI-Modelle", "Datenbanken", "API-Anfragen", "Frontend"],
+        "Auslastung": [45, 25, 20, 10]
+    })
+    fig = px.pie(df, values='Auslastung', names='Kategorie', title='Ressourcenverteilung', hole=.3)
+    # Dark Theme für das Diagramm erzwingen
+    fig.update_layout(template="plotly_dark")
+    st.plotly_chart(fig, use_container_width=True)
+        `
+      }
+    }, document.getElementById("root"));
+  </script>
+</body>
+</html>
